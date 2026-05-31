@@ -5,21 +5,20 @@ from django.db.models.signals import post_save
 from django.contrib.auth import get_user_model
 
 User=get_user_model()
-# Create your models here.
+
+
+class Category(models.Model):
+    name=models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 class Product(models.Model):
-    CATEGORY = (
-        ("ELECTRONICS", "electronics"),
-        ("SKINCARE", "skincare"),
-        ("CLOTHINGS", "clothings"),
-        ("FOR_MEN", "for_men"),
-        ("FOR_WOMEN", "for women"),
-    )
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to='img')
     description = models.TextField(blank=True, null=True)
-    slug = models.SlugField(blank=True, null=True, max_length=255)  # Increased from 15 → 255
+    slug = models.SlugField(blank=True, null=True, max_length=255) 
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.CharField(max_length=15, choices=CATEGORY, blank=True, null=True)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE,related_name='Products')
 
     def __str__(self):
         return self.name

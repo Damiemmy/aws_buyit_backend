@@ -22,12 +22,12 @@ from .models import CustomUser
 class CustomUserAdmin(UserAdmin):
     # Add your custom fields to the default fieldsets (used when editing users)
     fieldsets = UserAdmin.fieldsets + (
-        ("Additional Info", {"fields": ("state", "city", "address", "phone")}),
+        ("Additional Info", {"fields": ("state", "city", "address", "phone","role")}),
     )
 
     # Add your custom fields to add_fieldsets (used when creating users in admin)
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ("Additional Info", {"fields": ("state", "city", "address", "phone")}),
+        ("Additional Info", {"fields": ("state", "city", "address", "phone","role")}),
     )
 
     # Display your custom fields in the list view

@@ -15,6 +15,8 @@ from django.conf import settings
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import AllowAny
 
 BASE_URL=settings.REACT_BASE_URL
 
@@ -25,11 +27,23 @@ paypalrestsdk.configure({
 })
 
 # Create your views here.
-@api_view(['GET'])
-def products(request):
-    product=Product.objects.all()
-    serializer=ProductSerializer(product,many=True)
-    return Response(serializer.data)
+
+# @api_view(['GET'])
+# def products(request):
+#     product=Product.objects.all()
+#     serializer=ProductSerializer(product,many=True)
+#     return Response(serializer.data)
+
+
+class products(ModelViewSet):
+    queryset=Product.objects.all()
+    serializer_class=ProductSerializer
+    filterset_fields=['category']
+    permission_classes=[AllowAny]
+
+    def get_queryset(self):
+        return Product.objects.all()
+
 
 @api_view(['GET'])
 def related_Products(request,slug):
