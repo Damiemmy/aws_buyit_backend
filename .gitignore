@@ -27,3 +27,11 @@ db.sqlite3
 Thumbs.db
 .DS_Store
 Backend/lib64
+
+venv/
+.env
+__pycache__/
+*.pyc
+media/
+staticfiles/
+db.sqlite3

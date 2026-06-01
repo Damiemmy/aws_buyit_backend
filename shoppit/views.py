@@ -17,6 +17,8 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
+from django.core.mail import EmailMessage
+from .tasks import send_welcome_email_task
 
 BASE_URL=settings.REACT_BASE_URL
 
@@ -344,6 +346,7 @@ def register_user(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+	send_welcome_email_task.delay(serializer.email,serializer.username)
         return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
