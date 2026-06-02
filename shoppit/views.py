@@ -19,6 +19,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 from django.core.mail import EmailMessage
 from .tasks import send_welcome_email_task
+from rest_framework.generics import CreateAPIView
 
 BASE_URL=settings.REACT_BASE_URL
 
@@ -340,15 +341,14 @@ def getuserimg(request):
     serializer=ProfileSerializer(profile)
     return Response(serializer.data)
     
-@api_view(['POST'])
-@permission_classes([AllowAny])  # Anyone should be able to register
-def register_user(request):
-    serializer = RegisterSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-	send_welcome_email_task.delay(serializer.email,serializer.username)
-        return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RegisterAPIView(CreateAPIView):
+    serializer_class=RegisterSerializer
+    
+    def perform_create(self,serializer):
+        user=serializer.save()
+        send_welcome_email_task.delay(user.email,user.username)
+
+
 
 @api_view(['GET', 'PUT', 'PATCH'])
 @permission_classes([IsAuthenticated])
