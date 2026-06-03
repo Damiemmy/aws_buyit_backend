@@ -9,8 +9,6 @@ services:
     command: gunicorn Backend.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
     env_file:
       - .env
     depends_on:
@@ -21,21 +19,15 @@ services:
     image: postgres:16
     container_name: postgres_db
     restart: always
-    environment:
-      POSTGRES_DB: ecommerce_db
-      POSTGRES_USER: ecommerce_user
-      POSTGRES_PASSWORD: strongpassword123
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   redis:
     image: redis:7
     container_name: redis_cache
     restart: always
-    ports:
-      - "6379:6379"
   nginx:
     image: nginx:latest
     container_name: nginx_proxy
